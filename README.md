@@ -1,2 +1,2 @@
 # DocuBot
-A document based chatbot
+A document-based chatbot
