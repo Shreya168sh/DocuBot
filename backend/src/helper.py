@@ -10,18 +10,31 @@ from src.prompt import prompt_template
 from config import PathConfigurations
 
 
-logger = Logger("HelperFunctions")
-
 class HelperFunctions:
     def __init__(
             self,
             ) -> None:
+        """
+        Initializes the HelperFunctions object with logger, base path, and model path.
+        """
         self.logger = Logger("HelperFunctions")
         self.base_path = PathConfigurations.BASE_PATH,
         self.model_path = PathConfigurations.MODEL_PATH
 
     # Create text chunks
     def split_text(self, documents):
+        """
+        Splits the given documents into text chunks using the RecursiveCharacterTextSplitter.
+
+        Parameters:
+            documents (list): A list of documents to be split into text chunks.
+
+        Returns:
+            list: A list of text chunks.
+
+        Raises:
+            Exception: If there is an error while tokenizing the documents.
+        """
         try:
             self.logger.info("Tokenization in progress...")
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=20)
@@ -35,6 +48,15 @@ class HelperFunctions:
 
     # Download embedding model from Huggingface Hub
     def download_embeddings(self):
+        """
+        Downloads embeddings from HuggingfaceHub and returns the embedding model.
+
+        Returns:
+            HuggingFaceEmbeddings: The embedding model downloaded from HuggingfaceHub.
+
+        Raises:
+            Exception: If there is an error while downloading the embeddings.
+        """
         try:
             self.logger.info("Downloading Embeddings from HuggingfaceHub...")
             embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -46,10 +68,17 @@ class HelperFunctions:
 
     # Download llm model from Huggingface Hub
     def download_model(self):
+        """
+        Downloads the LLAMA2 model from Huggingface Hub.
+
+        Returns:
+            str: The path to the downloaded model.
+
+        Raises:
+            Exception: If there is an error while downloading the model.
+        """
         try:
-            # print("Downloading model...")
             self.logger.info("Downloading LLAMA2...")
-            # print(f"model path in download model: {self.model_path}")
             os.makedirs(self.model_path, exist_ok=True)
             
             model_path = hf_hub_download(
@@ -59,30 +88,38 @@ class HelperFunctions:
                 )
 
             return model_path
+
         except Exception as e:
             self.logger.error(msg=f"Error while downloading model: {str(e)}")
             
 
     # Load the model
     def load_model(self):
-        try:
-            print(f"model path: {self.model_path}")
+        """
+        Load the LLAMA2 model.
 
+        This function checks if the model has already been downloaded and if not, it downloads it.
+        It then loads the model and returns the loaded model object.
+
+        Returns:
+            CTransformers: The loaded LLAMA2 model.
+
+        Raises:
+            Exception: If there is an error while loading the model.
+        """
+        try:
             if (not os.path.exists(self.model_path)) or \
                 (os.path.exists(self.model_path) and \
                 not any(fname.endswith('.bin') for fname in os.listdir(self.model_path))):
                 self.download_model()
 
-            # print("Loading model...")
             self.logger.info("Loading LLAMA2...")
             model = os.path.join(self.model_path, os.listdir(self.model_path)[0])
-            print(f"model: {model}")
             llm = CTransformers(model=model,
                                 model_type="llama",
                                 config={"max_new_tokens": 512,
                                         "temperature": 0})
 
-            # print("Model loaded successfully!")
             self.logger.info("LLAMA2 Loaded!")
             return llm
         
@@ -91,17 +128,41 @@ class HelperFunctions:
 
 
     def prepare_prompt(self):
+        """
+        Prepares the prompt for the chatbot.
+
+        Returns:
+            PromptTemplate: The prepared prompt template.
+
+        Raises:
+            Exception: If there is an error while preparing the prompt.
+        """
         try:
             # Create prompt template
             prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
             self.logger.info(msg="Prompt created!")
             return prompt
+
         except Exception as e:
             self.logger.error(msg=f"Error while preparing prompt: {str(e)}")
 
 
     # create qa chain for question answering chatbot
     def qa_chain(self, prompt, llm, vector_store):
+        """
+        Initializes a RetrievalQA chain for question answering.
+
+        Args:
+            prompt (str): The prompt to set in the chain type.
+            llm (object): The language model to use for question answering.
+            vector_store (object): The vector store to use for retrieval.
+
+        Returns:
+            RetrievalQA: The initialized RetrievalQA chain.
+
+        Raises:
+            Exception: If there is an error while creating the QA chain.
+        """
         try:
             # Set prompt into chain type
             chain_type_kwargs = {"prompt": prompt}
@@ -116,21 +177,31 @@ class HelperFunctions:
             )
             self.logger.info(msg="QA chain created!")
             return qa
+
         except Exception as e:
             self.logger.error(msg=f"Error while creating QA chain: {str(e)}")
 
 
     # return most appropriate answer of the query from stored vectors if found
     def search_result(self, qa, query):
+        """
+        Searches for an answer to a given query using a question-answering model.
+
+        Args:
+            qa (object): The question-answering model to use for searching the answer.
+            query (str): The query to search for an answer to.
+
+        Returns:
+            dict: The response containing the answer to the query.
+
+        Raises:
+            Exception: If there is an error while resolving the query.
+        """
         try:
             self.logger.info(msg="Searching answer...")
             response = qa({"query": query})
             self.logger.info(msg="Query resolved!")
             return response
+
         except Exception as e:
             self.logger.error(msg=f"Error while resolving query: {str(e)}")
-
-
-# if __name__ == "__main__":
-#     print(HelperFunctions().download_embeddings())
-#     print(HelperFunctions().load_model())

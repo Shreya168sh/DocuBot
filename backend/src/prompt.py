@@ -12,5 +12,3 @@ Question: {question}
 Only return the helpful answer below and nothing else.
 Helpful Answer:
 """
-
-# 1. If you don't know the answer, just say that you don't know, don't try to make up an answer. 

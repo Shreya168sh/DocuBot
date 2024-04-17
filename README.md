@@ -32,8 +32,8 @@ PINECONE_INDEX = "Enter Index Name here"
 ## Step 05: Execute the API
 a. Go to project directory -
      cd backend
-b. Execute main file - 
-     python3 main.py
+b. Execute the given command in your terminal - 
+     streamlit run main.py
 
 
 ## Step 06: Copy the given URL in your search engine

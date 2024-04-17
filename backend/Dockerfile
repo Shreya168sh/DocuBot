@@ -10,4 +10,4 @@ ENV PINECONE_API_KEY="3fe11a56-ed9c-4529-99f7-ffc77781054c"
 ENV PINECONE_API_ENV="gcp-starter"
 ENV PINECONE_INDEX="docubot"
 EXPOSE 8082
-CMD ["python3", "main.py"]
+CMD ["streamlit", "run", "main.py"]
