@@ -23,6 +23,7 @@ pip install -r requirements.txt
 
 
 ## Step 04: Create an .env file to store Pinecone DB credentials
+
 a. PINECONE_API_KEY = "Enter your API Key here"
 b. PINECONE_API_ENV = "Enter your API Env here"
 c. PINECONE_INDEX = "Enter Index Name here"
