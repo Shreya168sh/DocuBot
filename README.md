@@ -22,11 +22,10 @@ source chatbot/bin/activate (for Ubuntu)
 pip install -r requirements.txt
 
 
-## Step 04: Create an .env file
-**Pinecone DB credentials**
-PINECONE_API_KEY = "Enter your API Key here"
-PINECONE_API_ENV = "Enter your API Env here"
-PINECONE_INDEX = "Enter Index Name here"
+## Step 04: Create an .env file to store Pinecone DB credentials
+a. PINECONE_API_KEY = "Enter your API Key here"
+b. PINECONE_API_ENV = "Enter your API Env here"
+c. PINECONE_INDEX = "Enter Index Name here"
 
 
 ## Step 05: Execute the API
